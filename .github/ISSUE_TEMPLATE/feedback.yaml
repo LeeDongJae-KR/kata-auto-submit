@@ -1,0 +1,46 @@
+name: 🙋 사용자 피드백
+description: 확장 프로그램을 사용해보신 후, 느낀 점을 자유롭게 남겨주세요!
+title: "[피드백] "
+labels: [feedback, user]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        감사합니다! 🙏  
+        여러분의 피드백은 이 확장 프로그램을 더 나은 방향으로 개선하는 데 큰 도움이 됩니다.
+
+  - type: textarea
+    id: experience
+    attributes:
+      label: 💬 어떤 경험을 하셨나요?
+      description: 사용하면서 좋았던 점, 불편했던 점 등을 자유롭게 적어주세요.
+      placeholder: 예) 자동 제출이 너무 편했어요! 다만 제목 매칭이 잘 안 될 때가 있었어요.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: ✨ 제안하고 싶은 기능이 있나요?
+      description: 추가되었으면 좋겠는 기능, 바뀌었으면 좋겠는 점이 있다면 알려주세요.
+      placeholder: 예) 제출 완료 후 히스토리를 볼 수 있는 기능이 있으면 좋겠어요.
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: 🧩 사용한 확장 버전 (선택)
+      placeholder: 예) v1.0.0
+
+  - type: dropdown
+    id: rating
+    attributes:
+      label: 🔍 전반적인 만족도
+      options:
+        - ⭐ 너무 만족해요!
+        - 👍 꽤 괜찮아요
+        - 😐 보통이에요
+        - 👎 개선이 필요해요
+      default: 1
+
