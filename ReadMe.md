@@ -89,3 +89,11 @@ chrome://extensions/
 - JSON 파일은 `data/problem_title_mapping.json`에서 관리되며, **정기적 수동 업데이트가 필요**합니다.
     
 - 제목 불일치 시 `"🛑 매핑된 문제 제목을 찾을 수 없습니다"` 라는 알림이 뜹니다.
+
+### 🙋 사용해보셨나요?
+
+이 확장 프로그램을 사용해보셨다면,
+느낀 점이나 제안하고 싶은 기능이 있다면 자유롭게 [Issue](https://github.com/LeeDongJae-KR/kata-auto-submit/issues/)로 남겨주세요!
+
+> 여러분의 경험은 이 프로젝트를 더 좋게 만드는데 큰 도움이 됩니다! 🙏
+
