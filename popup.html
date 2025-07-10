@@ -5,10 +5,27 @@
     <title>자동 제출 설정</title>
 </head>
 <body>
-    <h3>제출 정보 설정</h3>
-    이름: <input type="text" id="userName" placeholder="이름 입력"><br>
-    GitHub 링크: <input type="text" id="githubLink" placeholder="GitHub 링크 (선택)"><br><br>
-    <button id="saveBtn">저장하기</button>
+    <div class="card">
+        <h2 id="greeting">안녕하세요, --님 👋</h2>
+        <p id="level">현재 레벨: --</p>
+        <div class="problem-block">
+            <p>다음 SQL 문제:<br> <span id="next-sql">--</span></p>
+            <button id="go-sql">➡</button>
+        </div>
+        <div class="problem-block">
+            <p>다음 알고리즘 문제:<br> <span id="next-algo">--</span></p>
+            <button id="go-algo">➡</button>
+        </div>
+        <button id="open-settings">설정</button>
+    </div>
+    <div class="card" id="settings" style="display: none">
+        <h2>설정</h2>
+        <label for="userName">이름</label>
+        <input type="text" id="userName" />
+        <label for="githubLink">GitHub 주소</label>
+        <input type="text" id="githubLink" />
+        <button id="saveBtn">저장하기</button>
+    </div>
 
     <script src="popup.js"></script>
 </body>
