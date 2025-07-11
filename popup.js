@@ -65,8 +65,8 @@ function initializeUI({userName, githubLink}){
     githubLinkInput.value = githubLink;
 
     if(hasInfo){
-        fetchLevelAndNextProblems(userName).then(({userLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}) => {
-            level.textContent = `현재 레벨: ${userLevel ?? '--'}`;
+        fetchLevelAndNextProblems(userName).then(({userSqlLevel,userAlgoLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}) => {
+            level.innerHTML = `현재 레벨<br>${'  SQL'+userSqlLevel+' / 알고리즘'+userAlgoLevel ?? '--'}`;
             nextSql.textContent = nextSqlTitle || '--';
             nextAlgo.textContent = nextAlgoTitle || '--';
             
@@ -120,7 +120,8 @@ async function fetchLevelAndNextProblems(userName){
         csvToArray(algoStatusUrl)
     ]);
 
-    const userLevel = getUserLevel(sqlSheet, userName);
+    const userSqlLevel = getUserLevel(sqlSheet, userName);
+    const userAlgoLevel = getUserLevel(algoSheet, userName);
 
     const nextSqlTitle = getNextProblemTitle(sqlSheet, userName);
     const nextAlgoTitle = getNextProblemTitle(algoSheet, userName);
@@ -128,5 +129,5 @@ async function fetchLevelAndNextProblems(userName){
     const nextSqlLink = getNextProblemLink(nextSqlTitle, true);
     const nextAlgoLink = getNextProblemLink(nextAlgoTitle, false);
     
-    return {userLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}
+    return {userSqlLevel, userAlgoLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}
 }
