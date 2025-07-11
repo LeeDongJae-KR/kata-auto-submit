@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "코드 카타 자동 제출",
-  "version": "1.0",
+  "version": "1.2",
   "description": "코딩테스트 연습 채점 후 자동으로 Google Form 제출",
 
   "permissions": [
@@ -28,7 +28,10 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["data/problem_title_mapping.json"],
+      "resources": ["data/problem_title_mapping.json",
+      "data/problem_title_mapping_sql.json",
+      "data/problem_links.json",
+      "data/problem_links_sql.json"],
       "matches": ["<all_urls>"]
     }
   ]
