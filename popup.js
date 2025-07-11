@@ -17,9 +17,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-
+// 기존에 저장된 사용자 이름, 깃허브 주소 반환
 function loadUserData(){
-    // 기존 저장된 정보 불러오기
     return new Promise((resolve)=> {chrome.storage.sync.get(['userName', 'githubLink'], (data) => {
         resolve({
             userName: data.userName || '',
@@ -29,6 +28,13 @@ function loadUserData(){
     });
 }
 
+// CSV 처리 관련 유틸
+const csvToArray = async (url) => {
+    const res = await fetch(url);
+    const text = await res.text();
+    return text.split('\n').map(line => line.split(',').map(cell => cell.trim()));
+};
+
 function initializeUI({userName, githubLink}){
     const greeting = document.getElementById("greeting");
     const userNameInput = document.getElementById("userName");
@@ -37,5 +43,38 @@ function initializeUI({userName, githubLink}){
     greeting.textContent = hasInfo ? `안녕하세요, ${userName}님 👋` : '';
     userNameInput.value = userName;
     githubLinkInput.value = githubLink;
+
+    if(hasInfo){
+        fetchLevel(userName).then((userLevel) => {
+            level.textContent = `현재 레벨: ${userLevel ?? '--'}`;
+        });
+    }
+
+}
+
+// status 시트로부터 사용자 레벨 정보 가져오는 함수
+function getUserLevel(sheet, userName){
+    for (let i = 7; i <sheet.length; i++){ //8열부터 이름 시작
+        const name = sheet[i][5]?.trim();
+        const level = sheet[i][6]?.trim();
+        if (name === userName) return level || null;
+    }
+    return null;
+}
+
+// 사용자 레벨 정보를 반환하는 함수
+async function fetchLevel(userName){
+    const sqlStatusUrl = 'https://docs.google.com/spreadsheets/d/1LOh45OoXRDlvcIurbzzxAnBRAoojeueHmbuRA2KwoVU/export?format=csv&gid=415190887';
+    const algoStatusUrl = 'https://docs.google.com/spreadsheets/d/1LOh45OoXRDlvcIurbzzxAnBRAoojeueHmbuRA2KwoVU/export?format=csv&gid=361152416';
+
+    const [sqlSheet, algoSheet] = await Promise.all([
+        csvToArray(sqlStatusUrl),
+        csvToArray(algoStatusUrl)
+    ]);
+
+    const userLevel = getUserLevel(sqlSheet, userName);
+
+    return userLevel
+
 
 }
