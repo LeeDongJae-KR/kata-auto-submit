@@ -2,7 +2,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const userNameInput = document.getElementById('userName');
     const githubLinkInput = document.getElementById('githubLink');
     const saveBtn = document.getElementById('saveBtn');
-
+    const settingBtn = document.getElementById('settingBtn');
+    const settingPanel = document.getElementById('settings');
+    const infoPanel = document.getElementById('userInfo');
+    
+    
     await loadProblemLinks();
     const userData = await loadUserData();
     initializeUI(userData);
@@ -16,6 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             alert('정보가 저장되었습니다. 창을 닫았다가 다시 열어보세요!');
         });
     });
+
+    settingBtn.addEventListener('click', () => {
+        settingPanel.style.display = settingPanel.style.display === "none" ? "block" : "none";
+        infoPanel.style.display = infoPanel.style.display === "block" ? "none" : "block";
+    })
+
+
 });
 
 let problemLinksSql = {};
@@ -56,15 +67,20 @@ function initializeUI({userName, githubLink}){
     const nextAlgo = document.getElementById("nextAlgo");
     const sqlBtn = document.getElementById("sqlBtn");
     const algoBtn = document.getElementById("algoBtn");
-    
+    const settingPanel = document.getElementById("settings");
     const userNameInput = document.getElementById("userName");
     const githubLinkInput = document.getElementById("githubLink");
     const hasInfo = !!userName;
     greeting.textContent = hasInfo ? `안녕하세요, ${userName}님 👋` : '';
+    settingPanel.style.display = hasInfo? "none":"block";
     userNameInput.value = userName;
     githubLinkInput.value = githubLink;
 
     if(hasInfo){
+        // 사용자 정보창 보여주기
+        document.querySelector("#userInfo").style.display = "block";
+        settingPanel.style.display = "none";
+
         fetchLevelAndNextProblems(userName).then(({userSqlLevel,userAlgoLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}) => {
             level.innerHTML = `현재 레벨<br>${'  SQL'+userSqlLevel+' / 알고리즘'+userAlgoLevel ?? '--'}`;
             nextSql.textContent = nextSqlTitle || '--';
@@ -73,6 +89,10 @@ function initializeUI({userName, githubLink}){
             sqlBtn.onclick = () => { if (nextSqlLink) window.open(nextSqlLink); };
             algoBtn.onclick = () => { if (nextAlgoLink) window.open(nextAlgoLink); };
         });
+    } else {
+        // 설정창 보여주기
+        document.querySelector("#userInfo").style.display = "none";
+        settingPanel.style.display = "block";
     }
 
 }
