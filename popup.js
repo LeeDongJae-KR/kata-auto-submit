@@ -37,6 +37,7 @@ const csvToArray = async (url) => {
 
 function initializeUI({userName, githubLink}){
     const greeting = document.getElementById("greeting");
+    const nextAlgo = document.getElementById("nextAlgo");
     const userNameInput = document.getElementById("userName");
     const githubLinkInput = document.getElementById("githubLink");
     const hasInfo = !!userName;
@@ -45,8 +46,9 @@ function initializeUI({userName, githubLink}){
     githubLinkInput.value = githubLink;
 
     if(hasInfo){
-        fetchLevel(userName).then((userLevel) => {
+        fetchLevelAndNextProblems(userName).then(({userLevel, nextAlgoTitle}) => {
             level.textContent = `현재 레벨: ${userLevel ?? '--'}`;
+            nextAlgo.textContent = nextAlgoTitle || '--';
         });
     }
 
@@ -62,8 +64,24 @@ function getUserLevel(sheet, userName){
     return null;
 }
 
+function getNextProblemTitle(sheet, userName, nameColumnIndex = 5, titleRowIndex = 4, startCol = 8) {
+    //I5~제목행 | I8~학생status행
+    for (let i = 7; i < sheet.length; i++) {
+        if (sheet[i][nameColumnIndex]?.trim() === userName) {
+            const statusRow = sheet[i];
+            const titleRow = sheet[titleRowIndex];
+            for (let col = startCol; col < statusRow.length; col++) {
+                if (!statusRow[col] || statusRow[col].trim() === "") {
+                    return titleRow[col]?.trim() || null;
+                }
+            }
+        }
+    }
+    return null;
+}
+
 // 사용자 레벨 정보를 반환하는 함수
-async function fetchLevel(userName){
+async function fetchLevelAndNextProblems(userName){
     const sqlStatusUrl = 'https://docs.google.com/spreadsheets/d/1LOh45OoXRDlvcIurbzzxAnBRAoojeueHmbuRA2KwoVU/export?format=csv&gid=415190887';
     const algoStatusUrl = 'https://docs.google.com/spreadsheets/d/1LOh45OoXRDlvcIurbzzxAnBRAoojeueHmbuRA2KwoVU/export?format=csv&gid=361152416';
 
@@ -72,9 +90,11 @@ async function fetchLevel(userName){
         csvToArray(algoStatusUrl)
     ]);
 
+    const nextAlgoTitle = getNextProblemTitle(algoSheet, userName);
+
     const userLevel = getUserLevel(sqlSheet, userName);
 
-    return userLevel
+    return {userLevel, nextAlgoTitle}
 
 
 }
