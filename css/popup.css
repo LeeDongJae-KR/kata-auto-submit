@@ -3,7 +3,133 @@ body {
     margin: 0;
     padding: 16px;
     background: #f5f5f5;
-    width: 300px;
+    width: 320px;
     min-width: 280px;
     box-sizing: border-box;
 }
+.card {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-sizing: border-box;  
+}
+
+button {
+    padding: 6px 12px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 6px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3e8e41;
+}
+
+#settings {
+    text-align: center;
+}
+
+#settings label {
+    display: block;
+    margin: 8px 0 4px 8px;
+    text-align: left;
+    font-weight: 500;
+}
+
+input[type="text"] {
+    width: 95%;
+    padding: 6px;
+    margin: 6px;
+    border: 1px solid #a1a1a1;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#level {
+    margin-bottom: 16px;
+}
+
+.problemBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    padding: 4px;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px;
+}
+
+.problemBlock p {
+    margin: 6px 4px;
+    font-size: 13px;
+    flex: 1;
+}
+
+.problemBlock button {
+    padding: 4px 10px;
+    margin: 6px 4px;
+    font-size: 12px;
+}
+
+.card#userInfo {
+    position: relative;
+    padding-bottom: 60px;
+}
+
+#settingBtn {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    font-size: 12px;
+    background-color: #b3b3b3;
+}
+
+#settingBtn:hover {
+    background-color: #888888;
+}
+
+
+/* 다크모드 설정용 */
+@media (prefers-color-scheme: dark) {
+    body {
+      background: #1e1e1e;
+      color: #e0e0e0;
+    }
+  
+    .card {
+      background: #2a2a2a;
+    }
+  
+    h2, p, label {
+      color: #f0f0f0;
+    }
+  
+    input[type="text"] {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+  
+    button {
+      background-color: #4CAF50;
+      color: white;
+    }
+  
+    button:hover {
+      background-color: #3e8e41;
+    }
+  
+    #settingBtn {
+      background-color: #555;
+      color: #fff;
+    }
+  
+    #settingBtn:hover {
+      background-color: #777;
+    }
+  }
+  

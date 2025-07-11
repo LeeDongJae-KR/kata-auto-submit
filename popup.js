@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const settingPanel = document.getElementById('settings');
     const infoPanel = document.getElementById('userInfo');
     
-    
     await loadProblemLinks();
     const userData = await loadUserData();
     initializeUI(userData);
@@ -23,9 +22,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     settingBtn.addEventListener('click', () => {
         settingPanel.style.display = settingPanel.style.display === "none" ? "block" : "none";
-        infoPanel.style.display = infoPanel.style.display === "block" ? "none" : "block";
+        infoPanel.style.display = "none";
     })
-
 
 });
 
@@ -82,7 +80,7 @@ function initializeUI({userName, githubLink}){
         settingPanel.style.display = "none";
 
         fetchLevelAndNextProblems(userName).then(({userSqlLevel,userAlgoLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}) => {
-            level.innerHTML = `현재 레벨<br>${'  SQL'+userSqlLevel+' / 알고리즘'+userAlgoLevel ?? '--'}`;
+            level.innerHTML = `현재 레벨:<br>${'  <b>SQL</b>'+userSqlLevel+' / <b>알고리즘</b>'+userAlgoLevel ?? '--'}`;
             nextSql.textContent = nextSqlTitle || '--';
             nextAlgo.textContent = nextAlgoTitle || '--';
             
