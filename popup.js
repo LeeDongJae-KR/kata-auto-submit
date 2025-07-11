@@ -38,6 +38,7 @@ const csvToArray = async (url) => {
 function initializeUI({userName, githubLink}){
     const greeting = document.getElementById("greeting");
     const nextAlgo = document.getElementById("nextAlgo");
+    const nextSql = document.getElementById("nextSql");
     const userNameInput = document.getElementById("userName");
     const githubLinkInput = document.getElementById("githubLink");
     const hasInfo = !!userName;
@@ -46,8 +47,9 @@ function initializeUI({userName, githubLink}){
     githubLinkInput.value = githubLink;
 
     if(hasInfo){
-        fetchLevelAndNextProblems(userName).then(({userLevel, nextAlgoTitle}) => {
+        fetchLevelAndNextProblems(userName).then(({userLevel, nextSqlTitle, nextAlgoTitle}) => {
             level.textContent = `현재 레벨: ${userLevel ?? '--'}`;
+            nextSql.textContent = nextSqlTitle || '--';
             nextAlgo.textContent = nextAlgoTitle || '--';
         });
     }
@@ -64,6 +66,7 @@ function getUserLevel(sheet, userName){
     return null;
 }
 
+// status 시트로부터 다음 문제 제목 가져오는 함수
 function getNextProblemTitle(sheet, userName, nameColumnIndex = 5, titleRowIndex = 4, startCol = 8) {
     //I5~제목행 | I8~학생status행
     for (let i = 7; i < sheet.length; i++) {
@@ -90,11 +93,12 @@ async function fetchLevelAndNextProblems(userName){
         csvToArray(algoStatusUrl)
     ]);
 
+    const nextSqlTitle = getNextProblemTitle(sqlSheet, userName);
     const nextAlgoTitle = getNextProblemTitle(algoSheet, userName);
 
     const userLevel = getUserLevel(sqlSheet, userName);
 
-    return {userLevel, nextAlgoTitle}
+    return {userLevel, nextSqlTitle, nextAlgoTitle}
 
 
 }
