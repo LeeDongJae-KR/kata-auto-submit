@@ -28,7 +28,9 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["data/problem_title_mapping.json"],
+      "resources": ["data/problem_title_mapping.json",
+      "data/problem_links.json",
+      "data/problem_links_sql.json"],
       "matches": ["<all_urls>"]
     }
   ]
