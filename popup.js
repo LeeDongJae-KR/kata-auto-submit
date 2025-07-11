@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const githubLinkInput = document.getElementById('githubLink');
     const saveBtn = document.getElementById('saveBtn');
 
+    await loadProblemLinks();
     const userData = await loadUserData();
     initializeUI(userData);
 
@@ -16,6 +17,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 });
+
+let problemLinksSql = {};
+let problemLinksAlgo = {};
+
+async function loadProblemLinks(){
+    const sqlRes = await fetch(chrome.runtime.getURL("data/problem_links_sql.json"));
+    problemLinksSql = await sqlRes.json();
+    console.log("✅ SQL 문제 링크 로딩됨");
+
+    
+    const algoRes = await fetch(chrome.runtime.getURL("data/problem_links.json"));
+    problemLinksAlgo = await algoRes.json();
+    console.log("✅ 알고리즘 문제 링크 로딩됨");
+}
 
 // 기존에 저장된 사용자 이름, 깃허브 주소 반환
 function loadUserData(){
@@ -37,8 +52,11 @@ const csvToArray = async (url) => {
 
 function initializeUI({userName, githubLink}){
     const greeting = document.getElementById("greeting");
-    const nextAlgo = document.getElementById("nextAlgo");
     const nextSql = document.getElementById("nextSql");
+    const nextAlgo = document.getElementById("nextAlgo");
+    const sqlBtn = document.getElementById("sqlBtn");
+    const algoBtn = document.getElementById("algoBtn");
+    
     const userNameInput = document.getElementById("userName");
     const githubLinkInput = document.getElementById("githubLink");
     const hasInfo = !!userName;
@@ -47,10 +65,13 @@ function initializeUI({userName, githubLink}){
     githubLinkInput.value = githubLink;
 
     if(hasInfo){
-        fetchLevelAndNextProblems(userName).then(({userLevel, nextSqlTitle, nextAlgoTitle}) => {
+        fetchLevelAndNextProblems(userName).then(({userLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}) => {
             level.textContent = `현재 레벨: ${userLevel ?? '--'}`;
             nextSql.textContent = nextSqlTitle || '--';
             nextAlgo.textContent = nextAlgoTitle || '--';
+            
+            sqlBtn.onclick = () => { if (nextSqlLink) window.open(nextSqlLink); };
+            algoBtn.onclick = () => { if (nextAlgoLink) window.open(nextAlgoLink); };
         });
     }
 
@@ -83,6 +104,12 @@ function getNextProblemTitle(sheet, userName, nameColumnIndex = 5, titleRowIndex
     return null;
 }
 
+// Links 딕셔너리에서 문제 제목에 해당하는 링크를 가져오는 함수
+function getNextProblemLink(title, isSql){
+    if(!title) return null;   
+    return isSql? problemLinksSql[title] || null : problemLinksAlgo[title] || null;
+}
+
 // 사용자 레벨 정보를 반환하는 함수
 async function fetchLevelAndNextProblems(userName){
     const sqlStatusUrl = 'https://docs.google.com/spreadsheets/d/1LOh45OoXRDlvcIurbzzxAnBRAoojeueHmbuRA2KwoVU/export?format=csv&gid=415190887';
@@ -93,10 +120,13 @@ async function fetchLevelAndNextProblems(userName){
         csvToArray(algoStatusUrl)
     ]);
 
+    const userLevel = getUserLevel(sqlSheet, userName);
+
     const nextSqlTitle = getNextProblemTitle(sqlSheet, userName);
     const nextAlgoTitle = getNextProblemTitle(algoSheet, userName);
 
-    const userLevel = getUserLevel(sqlSheet, userName);
-
-    return {userLevel, nextSqlTitle, nextAlgoTitle}
+    const nextSqlLink = getNextProblemLink(nextSqlTitle, true);
+    const nextAlgoLink = getNextProblemLink(nextAlgoTitle, false);
+    
+    return {userLevel, nextSqlTitle, nextAlgoTitle, nextSqlLink, nextAlgoLink}
 }
