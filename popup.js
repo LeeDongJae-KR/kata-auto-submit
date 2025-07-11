@@ -99,6 +99,4 @@ async function fetchLevelAndNextProblems(userName){
     const userLevel = getUserLevel(sqlSheet, userName);
 
     return {userLevel, nextSqlTitle, nextAlgoTitle}
-
-
 }
