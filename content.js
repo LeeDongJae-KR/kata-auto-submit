@@ -1,14 +1,24 @@
 let problemMap = {};
+let problemMapSql = {};
 
 fetch(chrome.runtime.getURL("data/problem_title_mapping.json"))
     .then(res => res.json())
     .then(json => {
         problemMap = json;
-        console.log("✅ 문제번호 맵 로딩 완료");
+        console.log("✅ 알고리즘 문제 맵 로딩 완료");
     })
     .catch(err => {
-        console.error("❌ 문제번호 맵 로딩 실패:", err);
+        console.error("❌ 알고리즘 문제 맵 로딩 실패:", err);
     });
+fetch(chrome.runtime.getURL("data/problem_title_mapping_sql.json"))
+    .then(res => res.json())
+    .then(json => {
+        problemMapSql = json;
+        console.log("✅ SQL 문제 맵 로딩 완료");
+    })
+    .catch(err => {
+        console.error("❌ SQL 문제 맵 로딩 실패:", err);
+    });;
 
     function extractCodeFromDOM() {
         const lineNodes = document.querySelectorAll('.CodeMirror-line');
@@ -24,11 +34,14 @@ function submitToGoogleForm() {
     console.log("🚀 submitToGoogleForm 실행됨");
 
     const rawTitle = document.querySelector('ol.breadcrumb li.active')?.innerText.trim();
-    const mappedTitle = problemMap[rawTitle];
+    let mappedTitle = null;
+    const isSQL = problemMapSql.hasOwnProperty(rawTitle);
+    const isAlgorithm = problemMap.hasOwnProperty(rawTitle);
 
 
     // ✅ 1. 맵핑 데이터 로딩 여부 확인
-    if (Object.keys(problemMap).length === 0) {
+    if ((isSQL && Object.keys(problemMapSql).length === 0) ||
+        (isAlgorithm && Object.keys(problemMap).length === 0)) {
         alert("❗ 문제 번호 맵핑이 아직 로딩되지 않았습니다.");
         return;
     }
@@ -39,7 +52,11 @@ function submitToGoogleForm() {
         return;
     }
 
-    if (!mappedTitle) {
+    if (isSQL) {
+        mappedTitle = problemMapSql[rawTitle];
+    } else if (isAlgorithm) {
+        mappedTitle = problemMap[rawTitle];
+    } else {
         alert(`🛑 매핑된 문제 제목을 찾을 수 없습니다: "${rawTitle}"`);
         return;
     }
@@ -63,7 +80,9 @@ function submitToGoogleForm() {
             return;
         }
 
-        const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfQx04xqawsR_bhF_9ETixresMShqstSaznr5bCwBoVMo2GTw/formResponse';
+        const formUrl = isSQL
+        ? 'https://docs.google.com/forms/d/e/1FAIpQLSdF3V4pxLrMTMlA2WKLxwhfoyRnXYDgQtxATUj3eYtSLjrZuQ/formResponse'
+        : 'https://docs.google.com/forms/d/e/1FAIpQLSfQx04xqawsR_bhF_9ETixresMShqstSaznr5bCwBoVMo2GTw/formResponse';
 
         const formData = new URLSearchParams();
         formData.append('entry.770271090', data.userName);          // 이름
