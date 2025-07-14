@@ -110,18 +110,27 @@ function submitToGoogleForm() {
     });
 }
 
-function observeSubmitButton() {
-    const submitButton = document.querySelector('#submit-code');  // ✅ 셀렉터 수정
-    if (submitButton && !submitButton.dataset.autoSubmitAttached) {
-        submitButton.addEventListener('click', () => {
-            console.log("🖱️ 제출 버튼 클릭됨");
-            setTimeout(submitToGoogleForm, 2000); // 채점 딜레이 고려
-        });
-        submitButton.dataset.autoSubmitAttached = "true";
-        console.log("✅ 제출 버튼 이벤트 리스너 등록됨");
+let hasSubmitted = false; // 중복 제출 방지용
+
+function startAutoSubmit() {
+    const modal = document.querySelector("#modal-dialog.show");
+    if (!modal || hasSubmitted) return;
+
+    const headerEl = modal.querySelector(".modal-header > h4");
+    const checkText = headerEl?.textContent?.trim() || '';
+
+    if (checkText === '정답입니다!') {
+        hasSubmitted = true;
+        console.log("✅ 정답 확인됨, 자동 제출 시작");
+        setTimeout(() => {
+            submitToGoogleForm();
+        }, 500); // 렌더링 지연 고려한 딜레이
+    } else {
+        console.log("⛔ 정답이 아니므로 제출하지 않음");
     }
 }
 
-setInterval(observeSubmitButton, 500); // ⏱️ 0.5초마다 체크
-
-
+// 0.5초 간격으로 모달 상태 감지
+setInterval(() => {
+    startAutoSubmit();
+}, 500);
